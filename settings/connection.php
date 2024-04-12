@@ -1,8 +1,8 @@
 <?php
 // Declare constant variables to store the database connection parameters
-define("DB_HOST", "localhost");
-define("DB_USERNAME", "yanniasare");
-define("DB_PASSWORD", "americandrago");
+define("DB_HOST", "51.145.47.26");
+define("DB_USERNAME", "ROOT");
+define("DB_PASSWORD", "YYdajvslMa/0");
 define("DB_NAME", "fantasy");
 
 // Use mysqli connection method
