@@ -1,7 +1,7 @@
 <?php
 // Declare constant variables to store the database connection parameters
-define("DB_HOST", "51.145.47.26");
-define("DB_USERNAME", "ROOT");
+define("DB_HOST", "127.0.0.1");
+define("DB_USERNAME", "root");
 define("DB_PASSWORD", "YYdajvslMa/0");
 define("DB_NAME", "fantasy.sql");
 
