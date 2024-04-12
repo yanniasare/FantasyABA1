@@ -1,12 +1,12 @@
 <?php
 // Declare constant variables to store the database connection parameters
-define("DB_HOST", "127.0.0.1");
-define("DB_USERNAME", "root");
-define("DB_PASSWORD", "YYdajvslMa/0");
-define("DB_NAME", "fantasy.sql");
+$DB_HOST= '127.0.0.1';
+$DB_USERNAME= 'root';
+$DB_PASSWORD= 'YYdajvslMa/0';
+$DB_NAME= 'fantasy.sql';
 
 // Use mysqli connection method
-$conn = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
+$conn = new mysqli($DB_HOST, $DB_USERNAME, $DB_PASSWORD, $DB_NAME);
 
 // Check if connection worked
 if ($conn->connect_error) {
