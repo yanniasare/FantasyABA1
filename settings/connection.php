@@ -3,7 +3,7 @@
 define("DB_HOST", "51.145.47.26");
 define("DB_USERNAME", "ROOT");
 define("DB_PASSWORD", "YYdajvslMa/0");
-define("DB_NAME", "fantasy");
+define("DB_NAME", "fantasy.sql");
 
 // Use mysqli connection method
 $conn = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
