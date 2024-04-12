@@ -1,5 +1,6 @@
 <?php
 include '../settings/connection.php';
+require_once '../functions/player_fxn.php';
 session_start();
 
 // Fetch the user's team and selected players from the database
@@ -38,7 +39,85 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fantasy ABA, The Official Fantasy Basketball Game of the Ashesi Basketball League</title>
     <link rel="stylesheet" href="../css/team-select.css">
-    
+    <script>
+        // Function to handle player substitution
+function substitutePlayer(selectedPlayerId, benchPlayerId) {
+    // Retrieve the selected player and bench player objects from the DOM or your data source
+    const selectedPlayer = document.querySelector(`[data-player-id="${selectedPlayerId}"]`);
+    const benchPlayer = document.querySelector(`[data-player-id="${benchPlayerId}"]`);
+
+    // Ensure both selected and bench players exist
+    if (selectedPlayer && benchPlayer) {
+        // Retrieve information about the player positions (front court or back court)
+        const selectedPosition = selectedPlayer.dataset.position;
+        const benchPosition = benchPlayer.dataset.position;
+
+        // Determine if the substitution maintains lineup rules
+        const isValidSubstitution = validateSubstitution(selectedPosition, benchPosition);
+
+        if (isValidSubstitution) {
+            // Swap the players in the UI
+            const selectedPlayerClone = selectedPlayer.cloneNode(true);
+            const benchPlayerClone = benchPlayer.cloneNode(true);
+            selectedPlayer.parentNode.replaceChild(benchPlayerClone, selectedPlayer);
+            benchPlayer.parentNode.replaceChild(selectedPlayerClone, benchPlayer);
+
+            // Update the data attributes to reflect the player positions
+            selectedPlayerClone.dataset.position = benchPosition;
+            benchPlayerClone.dataset.position = selectedPosition;
+
+            // Display a success message or update the UI to reflect the changes
+            console.log("Player substitution successful.");
+        } else {
+            // Display an error message if the substitution violates lineup rules
+            console.error("Invalid substitution. Please ensure lineup rules are maintained.");
+        }
+    } else {
+        // Display an error message if either the selected or bench player is not found
+        console.error("Player not found. Please try again.");
+    }
+}
+
+// Function to validate player substitution
+function validateSubstitution(selectedPosition, benchPosition) {
+    // Implement your validation logic here
+    // Check if the substitution maintains lineup rules
+    // For example, ensure correct number of front court and back court players
+    // Return true if the substitution is valid, false otherwise
+    // You may also perform additional checks based on your specific lineup rules
+    return true; // Placeholder return value, replace with your validation logic
+}
+
+        document.addEventListener("DOMContentLoaded", function() {
+    // Add event listener to the form for lineup submission
+    document.getElementById("lineup-form").addEventListener("submit", function(event) {
+        // Get all the checkboxes for lineup selection
+        const checkboxes = document.querySelectorAll('input[name="lineup[]"]');
+        
+        // Count the number of checkboxes checked (i.e., number of players selected for the lineup)
+        let selectedCount = 0;
+        checkboxes.forEach(function(checkbox) {
+            if (checkbox.checked) {
+                selectedCount++;
+            }
+        });
+        
+        // Define the required number of front court and back court players
+        const requiredFrontCourt = 2;
+        const requiredBackCourt = 3;
+        
+        // Validate lineup selection
+        if (selectedCount !== requiredFrontCourt + requiredBackCourt) {
+            // If the number of selected players is incorrect, prevent form submission
+            event.preventDefault();
+            
+            // Show an error message
+            alert("Please select 2 front court players and 3 back court players for your starting lineup.");
+        }
+    });
+});
+
+    </script>
 </head>
 <body>
     <header>
@@ -106,17 +185,25 @@ $conn->close();
                 </div>
                 <div class="roster-info">
     <h2>Selected Players</h2>
-    <ul id="selected-players" class="selected-players">
-        <?php
-        // Loop through each selected player fetched from the database
-        while ($row = $result->fetch_assoc()) {
-            // Output a list item for each selected player
-            echo "<li>{$row['player_name']} - {$row['position']} - ${$row['purchase_salary']}</li>";
-        }
-        ?>
-    </ul>
+    <div id="starting-lineup">
+    <h2>Starting Lineup</h2>
+    <!-- Display the starting lineup players here -->
+</div>
+
+<div id="bench-players">
+    <h2>Bench Players</h2>
+    <!-- Display the bench players here -->
+</div>
+
+<button id="substitute-btn">Substitute</button>
+
+    <?php 
+                display_player_selection_table($selected_players);
+            ?>
     <button type="submit" id="submit-btn">Submit Roster</button>
 </div>
+
+
 
 
                 <div class="schedule">

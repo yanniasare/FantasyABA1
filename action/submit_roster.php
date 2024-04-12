@@ -4,6 +4,10 @@ session_start();
 
 // Include database connection settings
 include '../settings/connection.php';
+// Retrieve the raw POST data
+$jsonData = file_get_contents('php://input');
+// Decode the JSON data into a PHP associative array
+$data = json_decode($jsonData, true);
 
 // Check if user is logged in and get their ID
 if (!isset($_SESSION['user_id'])) {
@@ -14,9 +18,10 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id']; // Example session variable, adjust as needed
 
 // Extract selected player data from POST request
-if (isset($_POST['selected_players'])) {
-    $selected_players = $_POST['selected_players'];
+if (isset($data['selected_players'])) {
+    $selected_players = $data['selected_players'];
 }
+
 // Check if selected_players is empty
 if (empty($selected_players)) {
     exit("No selected players data received."); // Adjust as needed
@@ -40,8 +45,10 @@ try {
     $stmt->close();
     
     echo "Selection saved successfully!";
+
 } catch (Exception $e) {
     // Handle database errors
+    
     exit("Error saving selection: " . $e->getMessage()); // Adjust as needed
 }
 ?>

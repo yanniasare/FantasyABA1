@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (response.ok) {
                     errorMessage.textContent = "Selection saved successfully!";
                     // Redirect to the profile setup page
-                    window.location.href = "../view/profile_setup.php"; // Adjust the URL as needed
+                    window.location.href = "../view/myteam.php"; // Adjust the URL as needed
                 } else {
                     console.error("Failed to save selection:", response.statusText);
                     errorMessage.textContent = "Failed to save selection. Please try again.";

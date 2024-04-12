@@ -1,83 +1,57 @@
 <?php
+// Include the file that contains the function to get team selection
+require_once '../action/get-team-selection.php';
 
-// include the get all chores action
-require_once '../action/get_all_players_action.php';
+// Execute the function to get the selected players
+$selected_players = get_team_selection();
 
-// execute / call / run the function created in the get_all_chores_action file and assign the output to a variable
-$var_data = get_all_players();
+// Example: Mark the first two players as starting lineup and the rest as bench
+$starting_lineup_count = 5; // Change this according to your requirements
+foreach ($selected_players as $key => $player) {
+    $selected_players[$key]['is_starting_lineup'] = ($key < $starting_lineup_count);
+}
 
-function display_player_table() {
-    global $var_data;
-
-    // Create an associative array to group players by position
-    $grouped_players = [];
-    foreach ($var_data as $player) {
-        if (isset($player['position'])) {
-            $position = strtolower($player['position']);
-            if (!isset($grouped_players[$position])) {
-                $grouped_players[$position] = [];
-            }
-            $grouped_players[$position][] = $player;
-        }
-    }
-
-    // Display the front court players
-
-    if (isset($grouped_players['front court'])) {
-        // Display the front court players
+function display_player_selection_table($selected_players) {
+    // Check if there are selected players to display
+    if (!empty($selected_players)) {
+        // Start building the form
+        echo '<form id="lineup-form" action="submit-lineup.php" method="post">';
         echo '<table>';
-    echo '<thead>';
-    echo '<tr>';
-    echo '<th>FRONT COURT</th>';
-    echo '<th>Team</th>';
-    echo '<th>$</th>';
-    echo '</tr>';
-    echo '</thead>';
-    echo '<tbody id="players_list">';
+        echo '<thead>';
+        echo '<tr>';
+        echo '<th>Player Name</th>';
+        echo '<th>Position</th>';
+        echo '<th>Salary</th>';
+        echo '<th>Status</th>'; // Change "Starting Lineup" to "Status"
+        echo '</tr>';
+        echo '</thead>';
+        echo '<tbody>';
 
-    foreach ($grouped_players['front court'] as $player) {
-        echo '<tr data-player-id="' . $player['player_id'] . '" data-player-position="' . strtolower($player['position']) . '" data-player-team="' . $player['team_name'] . '">';
-echo '<td>' . $player["player_name"] . '</td>';
-echo '<td>' . $player["team_name"] . '</td>';
-echo '<td>' . $player["purchase_salary"] . '</td>';
-echo '<td><a href="../action/add_player.php?player_id=' . $player["player_id"] . '">
-<button id="select-player-btn">Select</button><a></td>';
-echo '</tr>';
+        // Loop through each selected player and display them in a table row
+        foreach ($selected_players as $player) {
+            // Determine the CSS class based on the player's status
+            $status_class = $player['is_starting_lineup'] ? 'starting-lineup' : 'bench';
+            // Output the player row with onclick attribute to call the substitutePlayer function
+            echo '<tr id="player-' . $player['id'] . '" class="player-row ' . $status_class . '" onclick="substitutePlayer(' . $player['id'] . ')">';
+            echo '<td>' . $player["player_name"] . '</td>';
+            echo '<td>' . $player["position"] . '</td>';
+            echo '<td>' . $player["purchase_salary"] . '</td>';
+            // Display the status (Starting Lineup or Bench)
+            echo '<td>' . ($player["is_starting_lineup"] ? "Starting Lineup" : "Bench") . '</td>';
+            echo '</tr>';
+        }
+
+        // Close the table body and table tags
+        echo '</tbody>';
+        echo '</table>';
+        echo '<button type="submit">Save Your Team</button>'; // Add a submit button for the form
+        echo '</form>';
+    } else {
+        // If there are no selected players, display a message
+        echo '<p>No players selected yet.</p>';
     }
-
-    echo '</tbody>';
-    echo '</table>';
-    }
-
-    // Display the back court players
-    if (isset($grouped_players['back court'])) {
-    echo '<table>';
-    echo '<thead>';
-    echo '<tr>';
-    echo '<th>BACK COURT</th>';
-    echo '<th>Team</th>';
-    echo '<th>$</th>';
-echo '</tr>';
-    echo '</thead>';
-    echo '<tbody>';
-
-    foreach ($grouped_players['back court'] as $player) {
-        echo '<tr data-player-id="' . $player['player_id'] . '" data-player-position="' . strtolower($player['position']) . '" data-player-team="' . $player['team_name'] . '">';
-echo '<td>' . $player["player_name"] . '</td>';
-echo '<td>' . $player["team_name"] . '</td>';
-echo '<td>' . $player["purchase_salary"] . '</td>';
-echo '<td><button id="select-player-btn">Select</button></td>';
-echo '</tr>';
-    }
-
-    echo '</tbody>';
-    echo '</table>';
-}
 }
 
-
-
-// Update the roster table
-function update_roster_table($selectedBackCourtPlayers, $selectedFrontCourtPlayers) {
-    // Display the roster table here
-  }
+// Call the function to display the selected players table
+display_player_selection_table($selected_players);
+?>
