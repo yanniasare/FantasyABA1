@@ -1,20 +1,16 @@
 <?php
-// Declare constant variables to store the database connection parameters
-$DB_HOST= '127.0.0.1';
-$DB_USERNAME= 'root';
-$DB_PASSWORD= 'YYdajvslMa/0';
-$DB_NAME= 'fantasy.sql';
+$db_host = 'localhost';
+$db_user = 'root';
+$db_password = 'kj6h:woFwPvd';
+$db_name = 'YYdajvslMa/0';
 
-// Use mysqli connection method
-$conn = new mysqli($DB_HOST, $DB_USERNAME, $DB_PASSWORD, $DB_NAME);
+$conn = new mysqli($db_host, $db_user, $db_password, $db_name);
 
-// Check if connection worked
 if ($conn->connect_error) {
-    // Use the die() function if connection fails and display error
-    die("Connection failed: " . $conn->connect_error);
-}
+    die("Failed to connect to MySQL: " . $conn->connect_error);
+} 
 
-// You can now use the `$conn` variable to run queries on the database
+//$conn->query("SET GLOBAL general);
 $conn->query("SET GLOBAL general_log = 'ON'");
-$conn->query("SET GLOBAL log_output = 'TABLE'");
+$conn->query("SET GLOBAL log_output = 'TABLE'");
 ?>
